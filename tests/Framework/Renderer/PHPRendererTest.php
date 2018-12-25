@@ -40,5 +40,4 @@ class PHPRendererTest extends TestCase
         $content = $this->renderer->render('demoWithParams', ['name' => 'theo']);
         $this->assertEquals('Hello theo', $content);
     }
-
 }

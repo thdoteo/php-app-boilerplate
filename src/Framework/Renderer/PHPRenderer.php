@@ -78,5 +78,4 @@ class PHPRenderer implements RendererInterface
         $namespace = $this->getNamespace($view);
         return str_replace('@' . $namespace, $this->paths[$namespace], $view);
     }
-
 }

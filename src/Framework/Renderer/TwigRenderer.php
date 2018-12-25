@@ -9,16 +9,17 @@ class TwigRenderer implements RendererInterface
 
     private $twig;
 
-    public function __construct(string $path)
+    public function __construct(\Twig_Loader_Filesystem $loader, \Twig_Environment $twig)
     {
-        $this->loader = new \Twig_Loader_Filesystem($path);
-        $this->twig = new \Twig_Environment($this->loader, []);
+        $this->loader = $loader;
+        $this->twig =$twig;
     }
 
     /**
      * Adds a path to load views
      * @param string $namespace
      * @param string|null $path
+     * @throws \Twig_Error_Loader
      */
     public function addPath(string $namespace, ?string $path = null): void
     {
