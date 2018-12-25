@@ -5,15 +5,14 @@ namespace Tests\Framework;
 use Framework\Renderer;
 use PHPUnit\Framework\TestCase;
 
-class RendererTest extends TestCase
+class PHPRendererTest extends TestCase
 {
 
     private $renderer;
 
     public function setUp()
     {
-        $this->renderer = new Renderer();
-        $this->renderer->addPath(__DIR__ . '/views');
+        $this->renderer = new Renderer\PHPRenderer(__DIR__ . '/views');
     }
 
     public function testRenderTheRightPath()
