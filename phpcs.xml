@@ -9,6 +9,8 @@
 	<file>tests</file>
 	<file>public/index.php</file>
 
-	<rule ref="PSR2"></rule>
+	<rule ref="PSR2">
+		<exclude name="PSR1.Classes.ClassDeclaration.MissingNamespace"/>
+	</rule>
 	<rule ref="Generic.Arrays.DisallowLongArraySyntax"></rule>
 </ruleset>

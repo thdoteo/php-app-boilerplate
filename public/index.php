@@ -1,6 +1,6 @@
 <?php
 
-require '../vendor/autoload.php';
+require dirname(__DIR__) . '/vendor/autoload.php';
 
 // Choose modules to load
 $modules = [
@@ -20,5 +20,7 @@ $container = $builder->build();
 
 // Start App and handle requests
 $app = new \Framework\App($container, $modules);
-$response = $app->run(\GuzzleHttp\Psr7\ServerRequest::fromGlobals());
-\Http\Response\send($response);
+if (php_sapi_name() !== 'cli') {
+    $response = $app->run(\GuzzleHttp\Psr7\ServerRequest::fromGlobals());
+    \Http\Response\send($response);
+}

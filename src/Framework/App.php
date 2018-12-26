@@ -76,4 +76,9 @@ class App
             throw new \Exception('Response is not a string or an instance of ResponseInterface.');
         }
     }
+
+    public function getContainer(): ContainerInterface
+    {
+        return $this->container;
+    }
 }
