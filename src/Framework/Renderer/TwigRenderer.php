@@ -12,7 +12,7 @@ class TwigRenderer implements RendererInterface
     public function __construct(\Twig_Loader_Filesystem $loader, \Twig_Environment $twig)
     {
         $this->loader = $loader;
-        $this->twig =$twig;
+        $this->twig = $twig;
     }
 
     /**

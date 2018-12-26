@@ -16,7 +16,7 @@ class RouterTwigExtension extends \Twig_Extension
         $this->router = $router;
     }
 
-    public function getFunction()
+    public function getFunctions()
     {
         return [
             new \Twig_SimpleFunction('path', [$this, 'pathFor'])

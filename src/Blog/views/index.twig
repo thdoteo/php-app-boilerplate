@@ -3,5 +3,14 @@
 {% block title "My articles" %}
 
 {%  block body %}
-    welcome on the blog
+    <h1>Blog</h1>
+    <ul>
+        {% for post in posts %}
+            <li>
+                <a href="{{ path('blog.show', {slug: post.slug, id: post.id}) }}">
+                    {{ post.name }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
 {% endblock %}
