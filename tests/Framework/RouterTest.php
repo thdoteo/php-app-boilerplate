@@ -9,6 +9,9 @@ use PHPUnit\Framework\TestCase;
 class RouterTest extends TestCase
 {
 
+    /**
+     * @var Router
+     */
     private $router;
 
     public function setUp()
@@ -69,5 +72,18 @@ class RouterTest extends TestCase
 
         $uri = $this->router->generateUri('post.show', ['slug' => 'my-slug', 'id' => '18']);
         $this->assertEquals('/blog/my-slug-18', $uri);
+    }
+
+    public function testGenerateUriWithQueryParams()
+    {
+        $this->router->get('/blog', function () {
+            return 'fafzefe';
+        }, 'posts');
+        $this->router->get('/blog/{slug:[a-z0-9\-]+}-{id:\d+}', function () {
+            return 'hello';
+        }, 'post.show');
+
+        $uri = $this->router->generateUri('post.show', ['slug' => 'my-slug', 'id' => '18'], ['p' => 2]);
+        $this->assertEquals('/blog/my-slug-18?p=2', $uri);
     }
 }
