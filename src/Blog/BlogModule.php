@@ -2,10 +2,12 @@
 
 namespace App\Blog;
 
+use App\Blog\Actions\AdminBlogAction;
 use App\Blog\Actions\BlogAction;
 use Framework\Module;
 use Framework\Renderer\RendererInterface;
 use Framework\Router;
+use Psr\Container\ContainerInterface;
 
 class BlogModule extends Module
 {
@@ -18,10 +20,19 @@ class BlogModule extends Module
      * BlogModule constructor
      * @param Router $router
      */
-    public function __construct(string $prefix, Router $router, RendererInterface $renderer)
+    public function __construct(ContainerInterface $container)
     {
-        $renderer->addPath('blog', __DIR__ . '/views');
+        $container->get(RendererInterface::class)->addPath('blog', __DIR__ . '/views');
+
+        $router = $container->get(Router::class);
+        $prefix = $container->get('blog.prefix');
+
         $router->get($prefix, BlogAction::class, 'blog.index');
         $router->get($prefix . '/{slug:[a-z\-]+}-{id:[0-9]+}', BlogAction::class, 'blog.show');
+
+        if ($container->has('admin.prefix')) {
+            $prefixAdmin = $container->get('admin.prefix');
+            $router->crud($prefixAdmin . '/posts', AdminBlogAction::class, 'blog.admin');
+        }
     }
 }

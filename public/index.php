@@ -4,6 +4,7 @@ require dirname(__DIR__) . '/vendor/autoload.php';
 
 // Choose modules to load
 $modules = [
+    \App\Admin\AdminModule::class,
     \App\Blog\BlogModule::class
 ];
 

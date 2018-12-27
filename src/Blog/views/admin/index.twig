@@ -1,0 +1,37 @@
+{% extends '@admin/layout.twig' %}
+
+{% block title "Manage articles" %}
+
+{%  block body %}
+    <h1>Blog</h1>
+
+    <p class="text-right">
+        <a class="btn btn-primary" href="{{ path('blog.admin.create') }}">Create an article</a>
+    </p>
+    
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <td>Name</td>
+            <td>Actions</td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in items %}
+            <tr>
+                <td>{{ item.name }}</td>
+                <td>
+                    <a href="{{ path('blog.admin.edit', {id: item.id}) }}" class="btn btn-primary">Edit</a>
+                    <form style="display: inline-block;" action="{{ path('blog.admin.delete', {id: item.id}) }}" method="post">
+                        <input type="hidden" name="_METHOD" value="DELETE">
+                        <button class="btn btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {{ paginate(items, 'blog.admin.index') }}
+
+{% endblock %}

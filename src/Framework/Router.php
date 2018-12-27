@@ -19,24 +19,69 @@ class Router
      */
     private $router;
 
+    /**
+     * Router constructor.
+     */
     public function __construct()
     {
         $this->router = new FastRouteRouter();
     }
 
     /**
-     * Register a route
+     * Registers a route in GET
      * @param string $path
      * @param string|callable $callable
      * @param string $name
      */
-    public function get(string $path, $callable, string $name)
+    public function get(string $path, $callable, ?string $name = null)
     {
         $this->router->addRoute(new ZendRoute($path, $callable, ['GET'], $name));
     }
 
     /**
-     * Match a request with a registered route
+     * Registers a route in POST
+     * @param string $path
+     * @param string|callable $callable
+     * @param string $name
+     */
+    public function post(string $path, $callable, ?string $name = null)
+    {
+        $this->router->addRoute(new ZendRoute($path, $callable, ['POST'], $name));
+    }
+
+    /**
+     * Registers a route in DELETE
+     * @param string $path
+     * @param string|callable $callable
+     * @param string $name
+     */
+    public function delete(string $path, $callable, ?string $name = null)
+    {
+        $this->router->addRoute(new ZendRoute($path, $callable, ['DELETE'], $name));
+    }
+
+    /**
+     * Generates routes for crud
+     * @param string $prefixPath
+     * @param $callable
+     * @param $prefixName
+     */
+    public function crud(string $prefixPath, $callable, $prefixName)
+    {
+        $this->get($prefixPath, $callable, 'blog.admin.index');
+
+        $this->get($prefixPath . '/create', $callable, $prefixName . '.create');
+        $this->post($prefixPath . '/create', $callable);
+
+        $this->get($prefixPath . '/{id:[0-9]+}', $callable, $prefixName . '.edit');
+        $this->post($prefixPath . '/{id:[0-9]+}', $callable);
+
+        $this->delete($prefixPath . '/{id:[0-9]+}', $callable, $prefixName . '.delete');
+    }
+
+
+    /**
+     * Matches a request with a registered route
      * @param ServerRequestInterface $request
      * @return Route|null
      */

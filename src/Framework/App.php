@@ -40,6 +40,13 @@ class App
     {
         $uri = $request->getUri()->getPath();
 
+        $parsedBody = $request->getParsedBody();
+        if (array_key_exists('_METHOD', $parsedBody) &&
+            in_array($parsedBody['_METHOD'], ['DELETE', 'PUT'])
+        ) {
+            $request = $request->withMethod($parsedBody['_METHOD']);
+        }
+
         // Handle URLs ending with /
         if (!empty($uri) && $uri[-1] === "/") {
             return (new Response())
