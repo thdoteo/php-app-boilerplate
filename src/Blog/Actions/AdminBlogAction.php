@@ -6,6 +6,8 @@ use App\Blog\Table\PostTable;
 use Framework\Actions\RouterAwareAction;
 use Framework\Renderer\RendererInterface;
 use Framework\Router;
+use Framework\Session\FlashService;
+use Framework\Session\SessionInterface;
 use MongoDB\Driver\ReadConcern;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -27,13 +29,23 @@ class AdminBlogAction
      */
     private $postTable;
 
+    /**
+     * @var FlashService
+     */
+    private $flashService;
+
     use RouterAwareAction;
 
-    public function __construct(RendererInterface $renderer, Router $router, PostTable $postTable)
-    {
+    public function __construct(
+        RendererInterface $renderer,
+        Router $router,
+        PostTable $postTable,
+        FlashService $flashService
+    ) {
         $this->renderer = $renderer;
         $this->router = $router;
         $this->postTable = $postTable;
+        $this->flashService = $flashService;
     }
 
     /**
@@ -59,7 +71,9 @@ class AdminBlogAction
     {
         $params = $request->getQueryParams();
         $posts = $this->postTable->findPaginated(12, $params['p'] ?? 1);
-        return $this->renderer->render('@blog/admin/index', ['items' => $posts]);
+        return $this->renderer->render('@blog/admin/index', [
+            'items' => $posts
+        ]);
     }
 
     /**
@@ -75,6 +89,7 @@ class AdminBlogAction
             $params = $this->getParams($request);
             $params['updated_at'] = date('Y-m-d H:i:s');
             $this->postTable->update($item->id, $params);
+            $this->flashService->success('The article has been successfully modified.');
             return $this->redirect('blog.admin.index');
         }
 
@@ -95,6 +110,7 @@ class AdminBlogAction
                'created_at' => date('Y-m-d H:i:s')
             ]);
             $this->postTable->insert($params);
+            $this->flashService->success('The article has been created.');
             return $this->redirect('blog.admin.index');
         }
 
