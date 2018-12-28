@@ -7,9 +7,7 @@ use Framework\Actions\RouterAwareAction;
 use Framework\Renderer\RendererInterface;
 use Framework\Router;
 use Framework\Session\FlashService;
-use Framework\Session\SessionInterface;
 use Framework\Validator;
-use MongoDB\Driver\ReadConcern;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -88,8 +86,6 @@ class BlogAdminAction
 
         if ($request->getMethod() === 'POST') {
             $params = $this->getParams($request);
-            $params['updated_at'] = date('Y-m-d H:i:s');
-
             $validator = $this->getValidator($request);
             if ($validator->isValid()) {
                 $this->postTable->update($item->id, $params);
@@ -116,11 +112,6 @@ class BlogAdminAction
     {
         if ($request->getMethod() === 'POST') {
             $params = $this->getParams($request);
-            $params = array_merge($params, [
-               'updated_at' => date('Y-m-d H:i:s'),
-               'created_at' => date('Y-m-d H:i:s')
-            ]);
-
             $validator = $this->getValidator($request);
             if ($validator->isValid()) {
                 $this->postTable->insert($params);
@@ -144,9 +135,15 @@ class BlogAdminAction
 
     private function getParams(Request $request)
     {
-        return array_filter($request->getParsedBody(), function ($key) {
-            return in_array($key, ['name', 'content', 'slug']);
+        $params = array_filter($request->getParsedBody(), function ($key) {
+            return in_array($key, ['name', 'content', 'slug', 'created_at']);
         }, ARRAY_FILTER_USE_KEY);
+
+        $params = array_merge($params, [
+            'updated_at' => date('Y-m-d H:i:s')
+        ]);
+
+        return $params;
     }
 
     private function getValidator(Request $request)

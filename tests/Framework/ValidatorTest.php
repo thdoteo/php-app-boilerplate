@@ -44,9 +44,11 @@ class ValidatorTest extends TestCase
     public function testSlugSuccess()
     {
         $errors = (new Validator([
-            'slug' => 'aa-eeee43'
+            'slug1' => 'aa-eeee43',
+            'slug2' => 'qwww'
         ]))
-            ->slug('slug')
+            ->slug('slug1')
+            ->slug('slug2')
             ->getErrors();
         $this->assertCount(0, $errors);
     }
@@ -79,13 +81,15 @@ class ValidatorTest extends TestCase
         $errors = (new Validator([
             'slug1' => 'aa-ee_ee43',
             'slug2' => 'aa--ee-ee43',
-            'slug3' => 'aa-Ee-ee43'
+            'slug3' => 'aa-Ee-ee43',
+            'slug4' => 'aa-ee-ee43-'
         ]))
             ->slug('slug1')
             ->slug('slug2')
             ->slug('slug3')
+            ->slug('slug4')
             ->getErrors();
-        $this->assertCount(3, $errors);
+        $this->assertEquals(['slug1', 'slug2', 'slug3', 'slug4'], array_keys($errors));
     }
 
     public function testDatetime()

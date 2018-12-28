@@ -4,7 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>{% block title "Default title" %}</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/flatpickr/4.5.2/flatpickr.css">
     <style>
         .container {
             margin-top: 80px;
@@ -51,5 +52,14 @@
 
 </main>
 
+<script src="//cdnjs.cloudflare.com/ajax/libs/flatpickr/4.5.2/flatpickr.js"></script>
+<script>
+    flatpickr('.datepicker', {
+        enableTime: true,
+        altInput: true,
+        altFormat: 'j F Y, H:i',
+        dateFormat: 'Y-m-d H:i:S'
+    })
+</script>
 </body>
 </html>
