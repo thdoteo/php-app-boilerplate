@@ -20,12 +20,15 @@ class TextExtension extends \Twig_Extension
 
     /**
      * Returns an excerpt of a text
-     * @param string $content
+     * @param null|string $content
      * @param int $length
      * @return string
      */
-    public function excerpt(string $content, $length = 100): string
+    public function excerpt(?string $content, $length = 100): string
     {
+        if (is_null($content)) {
+            return '';
+        }
         if (mb_strlen($content) > $length) {
             $excerpt = mb_substr($content, 0, $length);
             $lastSpace = mb_strrpos($excerpt, ' ');

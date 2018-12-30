@@ -4,6 +4,7 @@ namespace Tests\App\Blog\Table;
 
 use App\Blog\Entity\Post;
 use App\Blog\Table\PostTable;
+use Framework\Database\NoElementFoundException;
 use Tests\DatabaseTestCase;
 
 class PostTableTest extends DatabaseTestCase
@@ -30,8 +31,8 @@ class PostTableTest extends DatabaseTestCase
 
     public function testFindNotFound()
     {
-        $post = $this->postTable->find(1);
-        $this->assertNull($post);
+        $this->expectException(NoElementFoundException::class);
+        $this->postTable->find(1);
     }
 
     public function testUpdate()

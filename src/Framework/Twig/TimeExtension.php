@@ -14,8 +14,11 @@ class TimeExtension extends \Twig_Extension
         ];
     }
 
-    public function ago(\DateTime $date, string $format = 'd/m/Y H:i')
+    public function ago(?\DateTime $date, string $format = 'd/m/Y H:i')
     {
+        if (is_null($date)) {
+            return 'WTFFFFF';
+        }
         return '<span class="timeago" datetime="' .
             $date->format(\DateTime::ISO8601) .
             '">' . $date->format($format) . '</span>';

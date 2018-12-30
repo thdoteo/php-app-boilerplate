@@ -3,8 +3,10 @@
 namespace App\Blog;
 
 use App\Blog\Actions\CategoryCrudAction;
+use App\Blog\Actions\CategoryShowAction;
 use App\Blog\Actions\PostCrudAction;
-use App\Blog\Actions\PostAction;
+use App\Blog\Actions\PostIndexAction;
+use App\Blog\Actions\PostShowAction;
 use Framework\Module;
 use Framework\Renderer\RendererInterface;
 use Framework\Router;
@@ -28,8 +30,9 @@ class BlogModule extends Module
         $router = $container->get(Router::class);
         $prefix = $container->get('blog.prefix');
 
-        $router->get($prefix, PostAction::class, 'blog.index');
-        $router->get($prefix . '/{slug:[a-z\-]+}-{id:[0-9]+}', PostAction::class, 'blog.show');
+        $router->get($prefix, PostIndexAction::class, 'blog.index');
+        $router->get($prefix . '/{slug:[a-z\-]+}-{id:[0-9]+}', PostShowAction::class, 'blog.show');
+        $router->get($prefix . '/category/{slug:[a-z\-]+}', CategoryShowAction::class, 'blog.categories.show');
 
         if ($container->has('admin.prefix')) {
             $prefixAdmin = $container->get('admin.prefix');

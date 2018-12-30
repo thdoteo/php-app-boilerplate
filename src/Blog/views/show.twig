@@ -6,6 +6,9 @@
     <h1>{{ post.name }}</h1>
 
     <p class="text-muted">
+        {% if post.category_id %}
+            <a href="{{ path('blog.categories.show', {slug: post.category_slug}) }}">{{ post.category_name }}</a>
+        {% endif %}
         {{ post.created_at | ago }}
     </p>
 
