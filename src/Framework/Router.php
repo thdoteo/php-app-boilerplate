@@ -68,7 +68,7 @@ class Router
      */
     public function crud(string $prefixPath, $callable, $prefixName)
     {
-        $this->get($prefixPath, $callable, 'blog.admin.index');
+        $this->get($prefixPath, $callable, $prefixName . '.index');
 
         $this->get($prefixPath . '/create', $callable, $prefixName . '.create');
         $this->post($prefixPath . '/create', $callable);

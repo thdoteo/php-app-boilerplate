@@ -9,7 +9,7 @@ use Framework\Router;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-class BlogAction
+class PostAction
 {
     /**
      * @var RendererInterface

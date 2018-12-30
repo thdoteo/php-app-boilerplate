@@ -38,13 +38,13 @@ class FormExtension extends \Twig_Extension
         }
         if ($error) {
             $attributes['class'] .= ' is-invalid';
-        } else {
-//            $attributes['class'] .= ' is-valid';
         }
         trim($attributes['class']);
 
         if ($type === 'textarea') {
             $input = $this->textarea($value, $attributes);
+        } elseif (array_key_exists('options', $opts)) {
+            $input = $this->select($value, $opts['options'], $attributes);
         } else {
             $input = $this->input($value, $attributes);
         }
@@ -74,23 +74,38 @@ class FormExtension extends \Twig_Extension
     /**
      * Generates an input of type text
      * @param string|null $value
-     * @param array $attrributes
+     * @param array $attributes
      * @return string
      */
-    private function input(?string $value, array $attrributes): string
+    private function input(?string $value, array $attributes): string
     {
-        return "<input " . $this->getHTMLFromArray($attrributes) . " type=\"text\" value=\"{$value}\">";
+        return "<input " . $this->getHTMLFromArray($attributes) . " type=\"text\" value=\"{$value}\">";
     }
 
     /**
      * Generates a textarea
      * @param string|null $value
-     * @param array $attrributes
+     * @param array $attributes
      * @return string
      */
-    private function textarea(?string $value, array $attrributes): string
+    private function textarea(?string $value, array $attributes): string
     {
-        return "<textarea " . $this->getHTMLFromArray($attrributes) . ">{$value}</textarea>";
+        return "<textarea " . $this->getHTMLFromArray($attributes) . ">{$value}</textarea>";
+    }
+
+    /**
+     * @param string|null $value
+     * @param array $options
+     * @param array $attributes
+     * @return string
+     */
+    private function select(?string $value, array $options, array $attributes): string
+    {
+        $htmlOptions = array_reduce(array_keys($options), function (string $html, string $key) use ($options, $value) {
+            $params = ['value' => $key, 'selected' => $key === $value];
+            return $html . '<option ' . $this->getHTMLFromArray($params) . '>' . $options[$key] . '</option>';
+        }, '');
+        return "<select " . $this->getHTMLFromArray($attributes) . ">{$htmlOptions}</select>";
     }
 
     /**
@@ -100,9 +115,15 @@ class FormExtension extends \Twig_Extension
      */
     private function getHTMLFromArray(array $attributes): string
     {
-        return implode(' ', array_map(function ($key, $value) {
-            return "{$key}=\"{$value}\"";
-        }, array_keys($attributes), $attributes));
+        $htmlParts = [];
+        foreach ($attributes as $key => $value) {
+            if ($value === true) {
+                $htmlParts[] = (string)$key;
+            } elseif ($value != false) {
+                $htmlParts[] = $key . '="' . $value . '"';
+            }
+        }
+        return implode(' ', $htmlParts);
     }
 
     /**

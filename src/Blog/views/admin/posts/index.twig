@@ -1,18 +1,19 @@
 {% extends '@admin/layout.twig' %}
 
-{% block title "Manage articles" %}
+{% block title "List of posts" %}
 
 {%  block body %}
-    <h1>Blog</h1>
+    <h1>List of posts</h1>
 
-    <p class="text-right">
-        <a class="btn btn-primary" href="{{ path('blog.admin.create') }}">Create an article</a>
+    <p>
+        <a class="btn btn-primary" href="{{ path(routesPrefix ~ '.create') }}">Create</a>
     </p>
     
     <table class="table table-striped">
         <thead>
         <tr>
             <td>Name</td>
+            <td>Category</td>
             <td>Actions</td>
         </tr>
         </thead>
@@ -20,9 +21,10 @@
         {% for item in items %}
             <tr>
                 <td>{{ item.name }}</td>
+                <td>{{ item.category_name }}</td>
                 <td>
-                    <a href="{{ path('blog.admin.edit', {id: item.id}) }}" class="btn btn-primary">Edit</a>
-                    <form style="display: inline-block;" action="{{ path('blog.admin.delete', {id: item.id}) }}" method="post">
+                    <a href="{{ path(routesPrefix ~ '.edit', {id: item.id}) }}" class="btn btn-primary">Edit</a>
+                    <form style="display: inline-block;" action="{{ path(routesPrefix ~ '.delete', {id: item.id}) }}" method="post">
                         <input type="hidden" name="_METHOD" value="DELETE">
                         <button class="btn btn-danger">Delete</button>
                     </form>
@@ -32,6 +34,6 @@
         </tbody>
     </table>
 
-    {{ paginate(items, 'blog.admin.index') }}
+    {{ paginate(items, routesPrefix ~ '.index') }}
 
 {% endblock %}

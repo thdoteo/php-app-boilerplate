@@ -1,0 +1,37 @@
+{% extends '@admin/layout.twig' %}
+
+{% block title "List of categories" %}
+
+{%  block body %}
+    <h1>Categories</h1>
+
+    <p>
+        <a class="btn btn-primary" href="{{ path(routesPrefix ~ '.create') }}">Create</a>
+    </p>
+    
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <td>Name</td>
+            <td>Actions</td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in items %}
+            <tr>
+                <td>{{ item.name }}</td>
+                <td>
+                    <a href="{{ path(routesPrefix ~ '.edit', {id: item.id}) }}" class="btn btn-primary">Edit</a>
+                    <form style="display: inline-block;" action="{{ path(routesPrefix ~ '.delete', {id: item.id}) }}" method="post">
+                        <input type="hidden" name="_METHOD" value="DELETE">
+                        <button class="btn btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {{ paginate(items, routesPrefix ~ '.index') }}
+
+{% endblock %}

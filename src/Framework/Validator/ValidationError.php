@@ -26,7 +26,8 @@ class ValidationError
         'minLength' => 'The field %s must be greater than %d.',
         'maxLength' => 'The field %s must be less than %d.',
         'betweenLength' => 'The field %s must be between %d and %d.',
-        'datetime' => 'The field %s must be a valid date (%s).'
+        'datetime' => 'The field %s must be a valid date (%s).',
+        'exists' => 'The element does not match any in column %s (in table %s).'
     ];
 
     /**

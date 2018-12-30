@@ -4,8 +4,9 @@ namespace Tests\Framework;
 
 use Framework\Validator;
 use PHPUnit\Framework\TestCase;
+use Tests\DatabaseTestCase;
 
-class ValidatorTest extends TestCase
+class ValidatorTest extends DatabaseTestCase
 {
 
     public function testNotEmpty()
@@ -121,5 +122,19 @@ class ValidatorTest extends TestCase
             ->datetime('date')
             ->getErrors();
         $this->assertCount(1, $errors);
+    }
+
+    public function testExists()
+    {
+        $pdo = $this->getPdo();
+        $pdo->exec('CREATE TABLE test (id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(255))');
+        $pdo->exec('INSERT INTO test (name) VALUES ("a1")');
+        $pdo->exec('INSERT INTO test (name) VALUES ("a2")');
+        $this->assertTrue((new Validator([
+            'category' => 1
+        ]))->exists('category', 'test', $pdo)->isValid());
+        $this->assertFalse((new Validator([
+            'category' => 1222222
+        ]))->exists('category', 'test', $pdo)->isValid());
     }
 }
