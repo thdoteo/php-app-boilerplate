@@ -19,12 +19,29 @@ class RouterTwigExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            new \Twig_SimpleFunction('path', [$this, 'pathFor'])
+            new \Twig_SimpleFunction('path', [$this, 'path']),
+            new \Twig_SimpleFunction('is_active_route', [$this, 'isActiveRoute'])
         ];
     }
 
-    public function pathFor(string $path, array $params = []): string
+    /**
+     * @param string $path
+     * @param array $params
+     * @return string
+     */
+    public function path(string $path, array $params = []): string
     {
         return $this->router->generateUri($path, $params);
+    }
+
+    /**
+     * @param string $route
+     * @return bool
+     */
+    public function isActiveRoute(string $route): bool
+    {
+        $uri = $_SERVER['REQUEST_URI'] ?? '/';
+        $expectedUri = $this->router->generateUri($route);
+        return strpos($uri, $expectedUri) !== false;
     }
 }

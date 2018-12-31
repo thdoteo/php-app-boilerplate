@@ -107,6 +107,14 @@ class Table
     }
 
     /**
+     * Returns the number of elements
+     */
+    public function count(): int
+    {
+        return $this->fetchColumn("SELECT COUNT(id) FROM {$this->table}");
+    }
+
+    /**
      * Inserts a new element
      * @param array $params
      * @return bool
@@ -210,5 +218,21 @@ class Table
             throw new NoElementFoundException();
         }
         return $result;
+    }
+
+    /**
+     * Returns the first column
+     * @param string $query
+     * @param array $params
+     * @return mixed
+     */
+    private function fetchColumn(string $query, array $params = [])
+    {
+        $query = $this->pdo->prepare($query);
+        $query->execute($params);
+        if ($this->entity) {
+            $query->setFetchMode(\PDO::FETCH_CLASS, $this->entity);
+        }
+        return $query->fetchColumn();
     }
 }
