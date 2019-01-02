@@ -12,9 +12,11 @@ use Framework\Middleware\TrailingSlashMiddleware;
 use GuzzleHttp\Psr7\ServerRequest;
 use Middlewares\Whoops;
 
-require dirname(__DIR__) . '/vendor/autoload.php';
+chdir(dirname(__DIR__));
 
-$app = (new App(dirname(__DIR__) . '/config/config.php'))
+require 'vendor/autoload.php';
+
+$app = (new App('config/config.php'))
     ->addModule(AdminModule::class)
     ->addModule(BlogModule::class)
     ->pipe(Whoops::class)

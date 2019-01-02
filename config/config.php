@@ -15,6 +15,7 @@ use Framework\Twig\TextExtension;
 use Framework\Twig\TimeExtension;
 
 return [
+    'env' => \DI\env('ENV', 'production'),
     'database.host' => 'localhost',
     'database.user' => 'root',
     'database.password' => 'root',

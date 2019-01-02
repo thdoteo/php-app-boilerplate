@@ -93,6 +93,11 @@ class App implements RequestHandlerInterface
     {
         if ($this->container === null) {
             $builder = new ContainerBuilder();
+            $env = getenv('ENV') ?: 'production';
+            if ($env === 'production') {
+                $builder->enableCompilation('tmp');
+                $builder->writeProxiesToFile(true, 'tmp/proxies');
+            }
             $builder->addDefinitions($this->configPath);
 
             foreach ($this->modules as $module) {

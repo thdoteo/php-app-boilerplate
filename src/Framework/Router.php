@@ -21,9 +21,11 @@ class Router
 
     /**
      * Router constructor.
+     * @param string|null $cache
      */
-    public function __construct()
+    public function __construct(?string $cache = null)
     {
+
         $this->router = new FastRouteRouter();
     }
 
