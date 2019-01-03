@@ -30,6 +30,8 @@ class Query
 
     private $params;
 
+    private $entity;
+
     /**
      * @var PDO|null
      */
@@ -74,6 +76,12 @@ class Query
         return $this;
     }
 
+    public function as(string $entity): self
+    {
+        $this->entity = $entity;
+        return $this;
+    }
+
     public function __toString()
     {
         // SELECT
@@ -115,5 +123,13 @@ class Query
         } else {
             return $this->pdo->query($query);
         }
+    }
+
+    public function all(): QueryResult
+    {
+        return new QueryResult(
+            $this->execute()->fetchAll(PDO::FETCH_ASSOC),
+            $this->entity
+        );
     }
 }

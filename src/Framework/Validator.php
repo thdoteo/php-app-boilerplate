@@ -5,9 +5,18 @@ namespace Framework;
 use Framework\Database\Table;
 use Framework\Validator\ValidationError;
 use PDO;
+use Psr\Http\Message\UploadedFileInterface;
 
 class Validator
 {
+
+    private const MIME_TYPES = [
+        'jpg' => 'image/jpeg',
+        'jpeg' => 'image/jpeg',
+        'png' => 'image/png',
+        'pdf' => 'application/pdf'
+    ];
+
     /**
      * @var array
      */
@@ -157,6 +166,48 @@ class Validator
         if ($statement->fetchColumn() !== false) {
             $this->addError($key, 'unique');
         }
+        return $this;
+    }
+
+    /**
+     * Checks that a file has been uploaded.
+     * @param string $key
+     * @return $this
+     */
+    public function uploaded(string $key)
+    {
+        /**
+         * @var UploadedFileInterface $file
+         */
+        $file = $this->getValue($key);
+        if ($file === null || $file->getError() !== UPLOAD_ERR_OK) {
+            $this->addError($key, 'uploaded');
+        }
+        return $this;
+    }
+
+    /**
+     * Checks that the file's extension is allowed.
+     * @param string $key
+     * @param array $extensions
+     * @return Validator
+     */
+    public function extension(string $key, array $extensions)
+    {
+        /**
+         * @var UploadedFileInterface $file
+         */
+        $file = $this->getValue($key);
+        if ($file !== null && $file->getError() === UPLOAD_ERR_OK) {
+            $type = $file->getClientMediaType();
+            $extension = mb_strtolower(pathinfo($file->getClientFilename(), PATHINFO_EXTENSION));
+            $expectedType = self::MIME_TYPES[$extension] ?? null;
+
+            if (!in_array($extension, $extensions) || $expectedType !== $type) {
+                $this->addError($key, 'extension', [join(', ', $extensions)]);
+            }
+        }
+
         return $this;
     }
 

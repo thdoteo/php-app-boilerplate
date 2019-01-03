@@ -15,7 +15,7 @@ class FormExtension extends \Twig_Extension
     }
 
     /**
-     *  Generates a field
+     * Generates a field
      * @param array $context
      * @param string $key
      * @param mixed|null $value
@@ -43,6 +43,8 @@ class FormExtension extends \Twig_Extension
 
         if ($type === 'textarea') {
             $input = $this->textarea($value, $attributes);
+        } elseif ($type === 'file') {
+            $input = $this->file($attributes);
         } elseif (array_key_exists('options', $opts)) {
             $input = $this->select($value, $opts['options'], $attributes);
         } else {
@@ -91,6 +93,15 @@ class FormExtension extends \Twig_Extension
     private function textarea(?string $value, array $attributes): string
     {
         return "<textarea " . $this->getHTMLFromArray($attributes) . ">{$value}</textarea>";
+    }
+
+    /**
+     * @param array $attributes
+     * @return string
+     */
+    private function file(array $attributes)
+    {
+        return "<input " . $this->getHTMLFromArray($attributes) . " type=\"file\">";
     }
 
     /**

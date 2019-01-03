@@ -1,5 +1,6 @@
-vendor
+/vendor
+/public/uploads
+/tmp
 composer.lock
 .idea
 php-framework.iml
-tmp

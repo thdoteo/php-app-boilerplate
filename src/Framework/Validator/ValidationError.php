@@ -28,7 +28,9 @@ class ValidationError
         'betweenLength' => 'The field %s must be between %d and %d.',
         'datetime' => 'The field %s must be a valid date (%s).',
         'exists' => 'The element does not match any in column %s (in table %s).',
-        'unique' => 'The %s must be unique.'
+        'unique' => 'The %s must be unique.',
+        'uploaded' => 'The %s must be uploaded.',
+        'extension' => 'The %s must be of type %s.'
     ];
 
     /**

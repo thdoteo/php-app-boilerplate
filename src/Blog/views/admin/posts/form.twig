@@ -1,10 +1,21 @@
 {{ csrf() }}
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6">
         {{ field('name', item.name, 'Title') }}
     </div>
-    <div class="col-md-4">
+    <div class="col-md-6">
         {{ field('category_id', item.category_id, 'Category', {options: categories}) }}
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-4">
+        {% if item.image %}
+            <img src="{{ item.getThumb() }}" alt="" style="width: 100%;">
+        {% endif %}
+    </div>
+    <div class="col-md-4">
+
+        {{ field('image', item.image, 'Image', {type: 'file'}) }}
     </div>
     <div class="col-md-4">
         {{ field('slug', item.slug, 'Slug') }}
