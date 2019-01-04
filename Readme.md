@@ -1,6 +1,6 @@
 # php-framework
 
-A PHP framework project to start developping apps faster.
+A PHP framework to start developping apps faster.
 
 ## Usage
 
@@ -8,13 +8,16 @@ Start `server.sh` to launch PHP's developpement web server and open your browser
 
 ## Features
 
-- POO
-- Router
-- Modules
-- PHPUnit + PHPCS
+- A scalable structure (POO, Requests/Responses, Actions, Middlewares, Entities, Tables)
+- [Composer](https://github.com/composer/composer) for handling dependencies
+- A router relying on [Zend Expressive FastRoute](https://github.com/zendframework/zend-expressive-fastroute)
+- Independent modules (Blog, Auth, Admin...)
+- A flexible configuration with [PHP-DI](https://github.com/PHP-DI/PHP-DI)
+- Migrations and seedings of the database with [Phinx](https://github.com/cakephp/phinx)
+- A tough code with [PHPUnit](https://github.com/sebastianbergmann/phpunit)
+- A nice looking code with a [PHP Code Sniffer](https://github.com/squizlabs/PHP_CodeSniffer) to respect PSR-15
 
 ## To-Do
 
-- Refactoring (middlewares...)
-- Views / renderer (Twig)
-- Other modules: Auth, Blog...
+- Improve documentation
+- Add other modules (Shop...)
