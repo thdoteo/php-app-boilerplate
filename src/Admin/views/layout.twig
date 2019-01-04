@@ -23,6 +23,12 @@
         <ul class="navbar-nav mr-auto">
                 {{ admin_menu() }}
         </ul>
+        <div class="navbar-nav">
+            <form action="{{ path('auth.logout') }}" method="post" class="nav-item-active">
+                {{ csrf() }}
+                <button class="nav-link">Logout</button>
+            </form>
+        </div>
     </div>
 </nav>
 

@@ -3,6 +3,7 @@
 namespace Framework;
 
 use DI\ContainerBuilder;
+use Framework\Middleware\RoutePrefixedMiddleware;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -57,13 +58,19 @@ class App implements RequestHandlerInterface
     }
 
     /**
-     * Adds a middleware to the app
+     * Adds a middleware to the app.
+     *
+     * @param string $routePrefix
      * @param string $middleware
      * @return App
      */
-    public function pipe(string $middleware): self
+    public function pipe(string $routePrefix, ?string $middleware = null): self
     {
-        $this->middlewares[] = $middleware;
+        if ($middleware === null) {
+            $this->middlewares[] = $routePrefix;
+        } else {
+            $this->middlewares[] = new RoutePrefixedMiddleware($this->getContainer(), $routePrefix, $middleware);
+        }
         return $this;
     }
 
@@ -114,7 +121,11 @@ class App implements RequestHandlerInterface
     private function getMiddleware()
     {
         if (array_key_exists($this->middlewareIndex, $this->middlewares)) {
-            $middleware = $this->container->get($this->middlewares[$this->middlewareIndex]);
+            if (is_string($this->middlewares[$this->middlewareIndex])) {
+                $middleware = $this->container->get($this->middlewares[$this->middlewareIndex]);
+            } else {
+                $middleware = $this->middlewares[$this->middlewareIndex];
+            }
             $this->middlewareIndex++;
             return $middleware;
         }
