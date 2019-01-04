@@ -94,7 +94,7 @@ class FormExtension extends \Twig_Extension
      */
     private function checkbox(?string $value, array $attributes): string
     {
-        $hidden = '<input type="hidden" name"" value="0">';
+        $hidden = '<input type="hidden" name="' . $attributes['name'] . '" value="0">';
         if ($value) {
             $attributes['checked'] = true;
         }
