@@ -41,7 +41,6 @@ class PostShowAction
     /**
      * @param Request $request
      * @return ResponseInterface|string
-     * @throws \Framework\Database\NoElementFoundException
      */
     public function __invoke(Request $request)
     {

@@ -45,6 +45,8 @@ class FormExtension extends \Twig_Extension
             $input = $this->textarea($value, $attributes);
         } elseif ($type === 'file') {
             $input = $this->file($attributes);
+        } elseif ($type === 'checkbox') {
+            $input = $this->checkbox($value, $attributes);
         } elseif (array_key_exists('options', $opts)) {
             $input = $this->select($value, $opts['options'], $attributes);
         } else {
@@ -82,6 +84,21 @@ class FormExtension extends \Twig_Extension
     private function input(?string $value, array $attributes): string
     {
         return "<input " . $this->getHTMLFromArray($attributes) . " type=\"text\" value=\"{$value}\">";
+    }
+
+    /**
+     * Generates an input of type text
+     * @param string|null $value
+     * @param array $attributes
+     * @return string
+     */
+    private function checkbox(?string $value, array $attributes): string
+    {
+        $hidden = '<input type="hidden" name"" value="0">';
+        if ($value) {
+            $attributes['checked'] = true;
+        }
+        return $hidden . "<input " . $this->getHTMLFromArray($attributes) . " type=\"checkbox\" value=\"1\">";
     }
 
     /**

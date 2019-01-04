@@ -4,6 +4,7 @@ namespace App\Blog\Table;
 
 use App\Blog\Entity\Post;
 use Framework\Database\PaginatedQuery;
+use Framework\Database\Query;
 use Framework\Database\Table;
 use Pagerfanta\Pagerfanta;
 
@@ -13,56 +14,46 @@ class PostTable extends Table
 
     protected $table = 'posts';
 
-    public function findPaginatedPublic(int $perPage, int $currentPage): Pagerfanta
+    public function findAll(): Query
     {
-        $query = new PaginatedQuery(
-            $this->pdo,
-            "SELECT p.*, c.name as category_name, c.slug as category_slug
-              FROM posts as p
-              LEFT JOIN categories as c ON c.id = p.category_id
-              ORDER BY p.created_at DESC",
-            "SELECT COUNT(id) FROM {$this->table}",
-            $this->entity
-        );
-        return (new Pagerfanta($query))->setMaxPerPage($perPage)->setCurrentPage($currentPage);
-    }
-
-    public function findPaginatedPublicOfCategory(int $perPage, int $currentPage, int $categoryId): Pagerfanta
-    {
-        $query = new PaginatedQuery(
-            $this->pdo,
-            "SELECT p.*, c.name as category_name, c.slug as category_slug
-              FROM posts as p
-              LEFT JOIN categories as c ON c.id = p.category_id
-              WHERE p.category_id = :category
-              ORDER BY p.created_at DESC",
-            "SELECT COUNT(id) FROM {$this->table} WHERE category_id = :category",
-            $this->entity,
-            ['category' => $categoryId]
-        );
-        return (new Pagerfanta($query))->setMaxPerPage($perPage)->setCurrentPage($currentPage);
+        $categoryTable = new CategoryTable($this->getPdo());
+        return $this->makeQuery()
+            ->join($categoryTable->getTable() . ' as c', 'c.id = p.category_id')
+            ->select('p.*, c.name as category_name, c.slug as category_slug')
+            ->order('p.created_at DESC');
     }
 
     /**
-     * @param int $id
-     * @return mixed
-     * @throws \Framework\Database\NoElementFoundException
+     * Returns a Query to retrieve all public posts.
+     *
+     * @return Query
      */
-    public function findWithCategory(int $id)
+    public function findPublic(): Query
     {
-        return $this->fetchOrFail("
-            SELECT p.*, c.name category_name, c.slug category_slug
-            FROM posts as p
-            LEFT JOIN categories as c ON c.id = p.category_id
-            WHERE p.id = ?
-        ", [$id]);
+        return $this->findAll()
+            ->where('p.published = 1')
+            ->where('p.created_at < NOW()');
     }
 
-    protected function paginationQuery(): string
+    /**
+     * Returns a Query to retrieve all public posts of a specific category.
+     *
+     * @param int $id
+     * @return Query
+     */
+    public function findPublicOfCategory(int $id): Query
     {
-        return "SELECT p.id, p.name, c.name category_name
-        FROM {$this->table} as p
-        LEFT JOIN categories as c ON p.category_id = c.id
-        ORDER BY created_at DESC";
+        return $this->findPublic()->where("p.category_id = $id");
+    }
+
+    /**
+     * Returns a Post with its category's information.
+     *
+     * @param int $id
+     * @return Post
+     */
+    public function findWithCategory(int $id): Post
+    {
+        return $this->findPublic()->where("p.id = $id")->fetch();
     }
 }

@@ -38,7 +38,7 @@ class QueryResult implements \ArrayAccess, \Iterator
             }
             return $this->hydratedResults[$index];
         }
-        return $this->all()[$index];
+        return $this->results[$index];
     }
 
     /**
@@ -70,7 +70,7 @@ class QueryResult implements \ArrayAccess, \Iterator
      */
     public function valid()
     {
-        return isset($this->all()[$this->index]);
+        return isset($this->results[$this->index]);
     }
 
     /**

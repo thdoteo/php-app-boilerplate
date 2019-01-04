@@ -20,7 +20,7 @@ class Table
     /**
      * @var string|null
      */
-    protected $entity;
+    protected $entity = \stdClass::class;
 
     /**
      * Table constructor.
@@ -32,30 +32,35 @@ class Table
     }
 
     /**
-     * Get all elements
-     * @return array
+     * Make a Query.
+     *
+     * @return Query
      */
-    public function findAll(): array
+    public function makeQuery(): Query
     {
-        $query = $this->pdo->query("SELECT * FROM {$this->table}");
-        if ($this->entity) {
-            $query->setFetchMode(PDO::FETCH_CLASS, $this->entity);
-        } else {
-            $query->setFetchMode(PDO::FETCH_OBJ);
-        }
-        return $query->fetchAll();
+        return (new Query($this->pdo))->from($this->table, $this->table[0])->as($this->entity);
+    }
+
+    /**
+     * Get all elements.
+     *
+     * @return Query
+     */
+    public function findAll(): Query
+    {
+        return $this->makeQuery();
     }
 
     /**
      * Get an element by a property
      * @param string $field
      * @param string $value
-     * @return array
+     * @return mixed
      * @throws NoElementFoundException
      */
     public function findBy(string $field, string $value)
     {
-        return $this->fetchOrFail("SELECT * FROM {$this->table} WHERE {$field} = ?", [$value]);
+        return $this->makeQuery()->where($field . ' = :field')->params(['field' => $value])->fetchOrFail();
     }
 
     /**
@@ -97,21 +102,24 @@ class Table
 
     /**
      * Returns an element from its id
+     *
      * @param int $id
      * @return mixed
      * @throws NoElementFoundException
      */
     public function find(int $id)
     {
-        return $this->fetchOrFail("SELECT * FROM {$this->table} WHERE id = ?", [$id]);
+        return $this->makeQuery()->where('id = ' . $id)->fetchOrFail();
     }
 
     /**
      * Returns the number of elements
+     *
+     * @return int
      */
     public function count(): int
     {
-        return $this->fetchColumn("SELECT COUNT(id) FROM {$this->table}");
+        return $this->makeQuery()->count();
     }
 
     /**
@@ -197,42 +205,5 @@ class Table
     public function getPdo(): PDO
     {
         return $this->pdo;
-    }
-
-    /**
-     * Returns the first element of a query
-     * @param string $query
-     * @param array $params
-     * @return mixed
-     * @throws NoElementFoundException
-     */
-    protected function fetchOrFail(string $query, array $params = [])
-    {
-        $query = $this->pdo->prepare($query);
-        $query->execute($params);
-        if ($this->entity) {
-            $query->setFetchMode(\PDO::FETCH_CLASS, $this->entity);
-        }
-        $result = $query->fetch();
-        if ($result === false) {
-            throw new NoElementFoundException();
-        }
-        return $result;
-    }
-
-    /**
-     * Returns the first column
-     * @param string $query
-     * @param array $params
-     * @return mixed
-     */
-    private function fetchColumn(string $query, array $params = [])
-    {
-        $query = $this->pdo->prepare($query);
-        $query->execute($params);
-        if ($this->entity) {
-            $query->setFetchMode(\PDO::FETCH_CLASS, $this->entity);
-        }
-        return $query->fetchColumn();
     }
 }

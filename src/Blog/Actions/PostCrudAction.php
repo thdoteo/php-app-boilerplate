@@ -89,17 +89,19 @@ class PostCrudAction extends CrudAction
      */
     protected function getParams(Request $request, $post): array
     {
-        $fields = ['name', 'content', 'slug', 'created_at', 'category_id'];
         $params = array_merge($request->getUploadedFiles(), $request->getParsedBody());
 
-        if (!empty($params['image']->getClientFilename())) {
-            $fields[] = 'image';
-            $params['image'] = $this->postUpload->upload($params['image'], $post->image);
+        $image = $this->postUpload->upload($params['image'], $post->image);
+        if ($image) {
+            $params['image'] = $image;
+        } else {
+            unset($params['image']);
         }
 
-        $params = array_filter($params, function ($key) use ($fields) {
-            return in_array($key, $fields);
+        $params = array_filter($params, function ($key) {
+            return in_array($key, ['name', 'content', 'slug', 'created_at', 'category_id', 'image', 'published']);
         }, ARRAY_FILTER_USE_KEY);
+
         $params = array_merge($params, [
             'updated_at' => date('Y-m-d H:i:s')
         ]);

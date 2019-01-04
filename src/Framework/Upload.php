@@ -18,18 +18,25 @@ class Upload
         }
     }
 
-    public function upload(UploadedFileInterface $file, ?string $oldFile = null): string
+    /**
+     * @param UploadedFileInterface $file
+     * @param string|null $oldFile
+     * @return string|null
+     */
+    public function upload(UploadedFileInterface $file, ?string $oldFile = null): ?string
     {
-        $this->deleteFile($oldFile);
-
-        $targetPath = $this->addCopySuffix($this->path . DIRECTORY_SEPARATOR . $file->getClientFilename());
-        $dirname = pathinfo($targetPath, PATHINFO_DIRNAME);
-        if (!file_exists($dirname)) {
-            mkdir($dirname, 777, true);
+        if ($file->getError() === UPLOAD_ERR_OK) {
+            $this->deleteFile($oldFile);
+            $targetPath = $this->addCopySuffix($this->path . DIRECTORY_SEPARATOR . $file->getClientFilename());
+            $dirname = pathinfo($targetPath, PATHINFO_DIRNAME);
+            if (!file_exists($dirname)) {
+                mkdir($dirname, 777, true);
+            }
+            $file->moveTo($targetPath);
+            $this->generateImageFormats($targetPath);
+            return pathinfo($targetPath)['basename'];
         }
-        $file->moveTo($targetPath);
-        $this->generateImageFormats($targetPath);
-        return pathinfo($targetPath)['basename'];
+        return null;
     }
 
     public function getPathWithSuffix(string $path, string $suffix): string

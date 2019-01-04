@@ -3,6 +3,7 @@
 namespace Framework\Actions;
 
 use App\Blog\Entity\Post;
+use Framework\Database\Hydrator;
 use Framework\Database\Table;
 use Framework\Renderer\RendererInterface;
 use Framework\Router;
@@ -105,7 +106,7 @@ class CrudAction
     public function index(Request $request): string
     {
         $params = $request->getQueryParams();
-        $posts = $this->table->findPaginated(12, $params['p'] ?? 1);
+        $posts = $this->table->findAll()->paginate(12, $params['p'] ?? 1);
         return $this->renderer->render($this->viewsPrefix . '/index', [
             'items' => $posts
         ]);
@@ -129,7 +130,7 @@ class CrudAction
                 return $this->redirect($this->routesPrefix . '.index');
             }
             $errors = $validator->getErrors();
-            $item = $request->getParsedBody();
+            Hydrator::hydrate($request->getParsedBody(), $item);
         }
 
         return $this->renderer->render(
@@ -156,9 +157,7 @@ class CrudAction
                 return $this->redirect($this->routesPrefix . '.index');
             }
             $errors = $validator->getErrors();
-            $params = $request->getParsedBody();
-            $params['id'] = $item->id;
-            $item = $params;
+            Hydrator::hydrate($request->getParsedBody(), $item);
         }
 
         return $this->renderer->render(

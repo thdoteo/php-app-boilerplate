@@ -29,7 +29,8 @@ class PostSeeder extends AbstractSeed
                 'slug' => $faker->slug,
                 'content' => $faker->text(3000),
                 'created_at' => $faker->date('Y-m-d H:i:s', $date),
-                'updated_at' => $faker->date('Y-m-d H:i:s', $date)
+                'updated_at' => $faker->date('Y-m-d H:i:s', $date),
+                'published' => 1
             ];
         }
         $this->table('posts')->insert($data)->save();
