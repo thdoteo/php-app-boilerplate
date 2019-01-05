@@ -79,8 +79,6 @@ class App implements RequestHandlerInterface
         $middleware = $this->getMiddleware();
         if (is_null($middleware)) {
             throw new \Exception('No middleware has handled this request.');
-        } elseif (is_callable($middleware)) {
-            return call_user_func_array($middleware, [$request, [$this, 'handle']]);
         } elseif ($middleware instanceof MiddlewareInterface) {
             return $middleware->process($request, $this);
         }

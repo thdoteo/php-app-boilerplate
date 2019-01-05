@@ -26,7 +26,7 @@ class RouterTest extends TestCase
             return 'hello';
         }, 'blog');
         $route = $this->router->match($request);
-    
+
         $this->assertEquals('blog', $route->getName());
         $this->assertEquals('hello', call_user_func_array($route->getCallback(), [$request]));
     }
@@ -38,7 +38,7 @@ class RouterTest extends TestCase
             return 'hello';
         }, 'blog');
         $route = $this->router->match($request);
-    
+
         $this->assertEquals(null, $route);
     }
 
@@ -52,11 +52,11 @@ class RouterTest extends TestCase
             return 'hello';
         }, 'post.show');
         $route = $this->router->match($request);
-    
+
         $this->assertEquals('post.show', $route->getName());
         $this->assertEquals('hello', call_user_func_array($route->getCallback(), [$request]));
         $this->assertEquals(['slug' => 'my-slug', 'id' => '8'], $route->getParams());
-        
+
         $route = $this->router->match(new ServerRequest('GET', '/blog/my_slug-8'));
         $this->assertEquals(null, $route);
     }

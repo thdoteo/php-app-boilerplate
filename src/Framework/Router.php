@@ -2,6 +2,7 @@
 
 namespace Framework;
 
+use Framework\Middleware\CallableMiddleware;
 use Framework\Router\Route;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Expressive\Router\FastRouteRouter;
@@ -37,7 +38,7 @@ class Router
      */
     public function get(string $path, $callable, ?string $name = null)
     {
-        $this->router->addRoute(new ZendRoute($path, $callable, ['GET'], $name));
+        $this->router->addRoute(new ZendRoute($path, new CallableMiddleware($callable), ['GET'], $name));
     }
 
     /**
@@ -48,7 +49,7 @@ class Router
      */
     public function post(string $path, $callable, ?string $name = null)
     {
-        $this->router->addRoute(new ZendRoute($path, $callable, ['POST'], $name));
+        $this->router->addRoute(new ZendRoute($path, new CallableMiddleware($callable), ['POST'], $name));
     }
 
     /**
@@ -59,7 +60,7 @@ class Router
      */
     public function delete(string $path, $callable, ?string $name = null)
     {
-        $this->router->addRoute(new ZendRoute($path, $callable, ['DELETE'], $name));
+        $this->router->addRoute(new ZendRoute($path, new CallableMiddleware($callable), ['DELETE'], $name));
     }
 
     /**
@@ -93,7 +94,7 @@ class Router
         if ($result->isSuccess()) {
             return new Route(
                 $result->getMatchedRouteName(),
-                $result->getMatchedMiddleware(),
+                $result->getMatchedRoute()->getMiddleware()->getCallable(),
                 $result->getMatchedParams()
             );
         }
