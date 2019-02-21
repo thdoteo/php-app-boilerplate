@@ -18,7 +18,18 @@ Start `server.sh` to launch PHP's developpement web server and open your browser
 - A tough code with [PHPUnit](https://github.com/sebastianbergmann/phpunit)
 - A nice looking code with a [PHP Code Sniffer](https://github.com/squizlabs/PHP_CodeSniffer) to respect PSR-15
 
-## To-Do
+## Fixes
+
+- Remove admin.widgets in Admin config
+- Add Site module
+- Handle 404/500 HTTP errors
+- Query: add alias for join method
+- Validator: add URL, make some rules valid if empty
+- Form: select, password
+- &session bug in php-di cache
+- Escape table names in PDO queries
+
+# To-Do
 
 - Improve documentation and tests (for middlewares)
 - Add other modules (Shop...)
